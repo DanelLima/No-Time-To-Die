@@ -9,22 +9,33 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Enviar dados para o backend
-    const response = await fetch("http://localhost:3001/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, senha }),
-    });
-    
-    // Se o login for bem-sucedido, redireciona para o menu
-    if (response.ok) {
-      // Exemplo de redirecionamento:
+    try{
+      // Enviar dados para o backend
+      console.log("Tentando login com:", email, senha);
+
+      const response = await fetch("http://localhost:3001/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, senha }),
+      });
+      
+      // Se o login for bem-sucedido, redireciona para o menu
+      if (!response.ok) {
+        throw new Error("Falha no login");
+      }
+      const data = await response.json();
+      // Armazena o usuário no localStorage
+      localStorage.setItem("usuario", JSON.stringify(data.usuario));
+
+      // Redireciona para o menu
       navigate("/menu");
-    } else {
-      alert("Login falhou. Verifique CPF e senha.");
-    }
+
+  } catch (err) {
+    alert("Login falhou. Verifique Email e senha.");
+    console.error(err);
+  }
   };
 
   return (

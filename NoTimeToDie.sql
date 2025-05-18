@@ -78,3 +78,6 @@ CREATE TABLE Tarefa (
     FOREIGN KEY (idProjeto) REFERENCES Projeto(idProjeto)
 );
 
+INSERT INTO Usuario (nome, email, senha, celular)
+VALUES ('Daniel Souza de Lima','danielsouzalimabsb@gmail.com', 'masterkey', '(61) 98108-0783');
+
