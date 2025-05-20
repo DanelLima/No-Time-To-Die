@@ -5,7 +5,7 @@ USE NoTimeToDie;
 CREATE TABLE Usuario (
     idUsuario INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100),
-    email VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
     senha VARCHAR(100),
     celular VARCHAR(20)
 );

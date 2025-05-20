@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,7 +11,6 @@ export default function Login() {
     
     try{
       // Enviar dados para o backend
-      console.log("Tentando login com:", email, senha);
 
       const response = await fetch("http://localhost:3001/api/login", {
         method: "POST",
@@ -33,7 +32,7 @@ export default function Login() {
       navigate("/menu");
 
   } catch (err) {
-    alert("Login falhou. Verifique Email e senha.");
+    alert("Login falhou! Verifique Email e senha.");
     console.error(err);
   }
   };
@@ -41,7 +40,7 @@ export default function Login() {
   return (
     <div className="d-flex min-vh-100 align-items-center justify-content-center bg-light">
       <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow-sm w-25">
-        <h2 className="text-center mb-4">No Time To Die</h2>
+        <h1 className="text-center mb-1">No Time To Die</h1>
         <h3 className="text-center mb-5">Login</h3>
         <div className="mb-3">
           <label className="form-label">E-mail</label>
@@ -71,6 +70,12 @@ export default function Login() {
         >
           Entrar
         </button>
+        <div className="text-center mt-3">
+          <span>Não tem uma conta? </span>
+          <Link to="/cadastro"  className="text-primary text-decoration-none fw-bold">
+            Cadastre-se
+          </Link>
+        </div>
       </form>
     </div>
   );
