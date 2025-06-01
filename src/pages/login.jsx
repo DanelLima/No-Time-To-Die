@@ -4,13 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const navigate = useNavigate(); // Para navegação após login
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     try{
-      // Enviar dados para o backend
 
       const response = await fetch("http://localhost:3001/api/login", {
         method: "POST",
@@ -20,15 +19,12 @@ export default function Login() {
         body: JSON.stringify({ email, senha }),
       });
       
-      // Se o login for bem-sucedido, redireciona para o menu
       if (!response.ok) {
         throw new Error("Falha no login");
       }
       const data = await response.json();
-      // Armazena o usuário no localStorage
       localStorage.setItem("usuario", JSON.stringify(data.usuario));
 
-      // Redireciona para o menu
       navigate("/menu");
 
   } catch (err) {

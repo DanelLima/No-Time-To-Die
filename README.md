@@ -9,6 +9,7 @@ npm install react-router-dom
 npm install express mysql2 cors
 npm install bootstrap
 npm install react-bootstrap bootstrap
+npm install @fullcalendar/core @fullcalendar/react @fullcalendar/daygrid
 
 
 # Inicialização
