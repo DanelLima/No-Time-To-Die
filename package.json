@@ -2,7 +2,7 @@
   "name": "no-time-to-die",
   "version": "0.1.0",
   "private": true,
-  "type": "module", 
+  "type": "module",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -14,6 +14,7 @@
     "express": "^5.1.0",
     "mysql2": "^3.14.1",
     "react": "^19.1.0",
+    "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0",
     "react-scripts": "^5.0.1",

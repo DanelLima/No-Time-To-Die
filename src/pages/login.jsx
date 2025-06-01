@@ -38,9 +38,9 @@ export default function Login() {
   };
 
   return (
-    <div className="d-flex min-vh-100 align-items-center justify-content-center bg-light">
+    <div className="d-flex min-vh-100 align-items-center justify-content-center bg-blue">
       <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow-sm w-25">
-        <h1 className="text-center mb-1">No Time To Die</h1>
+        <h1 className="text-center mb-1">NO TIME TO DIE</h1><br /><br />
         <h3 className="text-center mb-5">Login</h3>
         <div className="mb-3">
           <label className="form-label">E-mail</label>

@@ -8,6 +8,8 @@ npm install axios
 npm install react-router-dom
 npm install express mysql2 cors
 npm install bootstrap
+npm install react-bootstrap bootstrap
+
 
 # Inicialização
 
