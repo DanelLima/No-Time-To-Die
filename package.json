@@ -21,10 +21,11 @@
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0",
     "react-scripts": "^5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "homepage": "/no-time-to-die"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cmd /c \"react-scripts start && start http://localhost:3000/no-time-to-die/\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -46,5 +47,7 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+
   }
+  
 }

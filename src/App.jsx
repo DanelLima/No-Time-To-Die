@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login";
 import Menu from "./pages/menu"; 
 import Cadastro from "./pages/cadastroUsuario";
-import "./pages/style.css"
+import "./style.css"
 
 function App() {
   return (
