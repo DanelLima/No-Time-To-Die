@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
-import { buscarPontosHoje, baterPonto } from "../backend/services/pontoService";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import '@fullcalendar/core/index.cjs';
@@ -13,6 +12,19 @@ export default function Menu() {
   const [pontos, setPontos] = useState([]);
   const [showMeta, setShowMeta] = useState(false);
   const [showLembrete, setShowLembrete] = useState(false);
+  const API_URL = 'http://localhost:3001/api/ponto';
+
+  async function buscarPontosHoje(idUsuario) {
+  const res = await fetch(`${API_URL}/hoje/${idUsuario}`);
+  return res.json();
+  }
+  
+  async function baterPonto(idUsuario) {
+  const res = await fetch(`${API_URL}/bater/${idUsuario}`, {
+    method: 'POST'
+    });
+  return res.json();
+  }
 
   useEffect(() => {
     if (!userData) {
