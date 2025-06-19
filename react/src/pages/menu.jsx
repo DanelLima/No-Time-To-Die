@@ -12,7 +12,7 @@ export default function Menu() {
   const [pontos, setPontos] = useState([]);
   const [showMeta, setShowMeta] = useState(false);
   const [showLembrete, setShowLembrete] = useState(false);
-  const API_URL = 'http://localhost:3001/api/ponto';
+  const API_URL = 'http://localhost:3001/ponto';
 
   async function buscarPontosHoje(idUsuario) {
   const res = await fetch(`${API_URL}/hoje/${idUsuario}`);

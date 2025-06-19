@@ -1,16 +1,20 @@
 import express from 'express';
-import router from './routes/userRoutes.js';
 import cors from "cors";
+import user from './routes/userRoutes.js';
+import ponto from './routes/pontoRoutes.js'
 import { initDb } from './config/database.js';
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
-app.use('/api', router);
+
+app.use('/usuario', user);
+app.use('/ponto', ponto);
 
 const startServer = async () => {
   try {
-    await initDb(); // conecta no banco ANTES de iniciar o servidor
+    await initDb();
     app.listen(3001, () => {
       console.log("Servidor rodando em http://localhost:3001");
     });
