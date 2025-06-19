@@ -10,6 +10,8 @@ export default function Projetos() {
     const [showTarefasProjeto, setShowTarefasProjeto] = useState(null);
     const [modoEdicao, setModoEdicao] = useState(false);
     const [idProjetoEditando, setIdProjetoEditando] = useState(null);
+    const [showConfirmExcluir, setShowConfirmExcluir] = useState(false);
+    const [projetoParaExcluir, setProjetoParaExcluir] = useState(null);
     const [novoProjeto, setNovoProjeto] = useState({
         nome: "",
         descricao: "",
@@ -49,9 +51,23 @@ export default function Projetos() {
         }
     }
 
+    function handleConfirmExcluir(idProjeto) {
+        setProjetoParaExcluir(idProjeto);
+        setShowConfirmExcluir(true);
+    }
+
     async function excluirProjeto(idProjeto) {
-        await fetch(`${API_URL}/excluirProjeto/${idProjeto}`, { method: "DELETE" });
-        buscarProjetos(userData.idUsuario);
+        try {
+            const res = await fetch(`${API_URL}/projeto/excluirProjeto/${idProjeto}`, {
+                method: "DELETE",
+            });
+            if (!res.ok) throw new Error("Erro ao excluir projeto");
+            await buscarProjetos(userData.idUsuario);
+        } catch (error) {
+            alert("Erro ao excluir projeto");
+            console.error(error);
+        }
+        setShowConfirmExcluir(false);
     }
 
     useEffect(() => {
@@ -203,18 +219,26 @@ export default function Projetos() {
                                         <p>Telefone: {projeto.cliente.telefone}</p>
                                     </div>
                                 )}
-                                <div className="p-3 border bg-white shadow">
-                                    <Button variant="info" onClick={() => setShowTarefasProjeto(projeto.idProjeto)}>Tarefas</Button>
+                                <div className="p-3  bg-white ">
+                                    <Button variant="info" className="me-2" onClick={() => setShowTarefasProjeto(projeto.idProjeto)}>Tarefas</Button>
                                     <Button
+                                        className="me-2"
                                         variant="warning"
                                         onClick={() => {
+                                            const formatarData = (dataString) => {
+                                                const data = new Date(dataString);
+                                                const ano = data.getFullYear();
+                                                const mes = String(data.getMonth() + 1).padStart(2, '0');
+                                                const dia = String(data.getDate()).padStart(2, '0');
+                                                return `${ano}-${mes}-${dia}`;
+                                            };
                                             setNovoProjeto({
                                                 ...projeto,
-                                                cliente: projeto.cliente || {
-                                                    nome: "",
-                                                    email: "",
-                                                    telefone: ""
-                                                }
+                                                dataInicio: formatarData(projeto.dataInicio),
+                                                dataFim: formatarData(projeto.dataFim),
+                                                cliente: projeto.cliente && typeof projeto.cliente === 'object'
+                                                    ? projeto.cliente
+                                                    : { nome: "", email: "", telefone: "" }
                                             });
                                             setModoEdicao(true);
                                             setIdProjetoEditando(projeto.idProjeto);
@@ -223,7 +247,9 @@ export default function Projetos() {
                                     >
                                         Editar
                                     </Button>
-                                    <Button variant="danger" onClick={() => excluirProjeto(projeto.idProjeto)}>Excluir</Button>
+                                    <Button variant="danger" className="me-2" onClick={() => handleConfirmExcluir(projeto.idProjeto)}>
+                                        Excluir
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -256,7 +282,7 @@ export default function Projetos() {
                     });
                 }}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Cadastrar Projeto</Modal.Title>
+                        <Modal.Title>{modoEdicao ? "Editar " : "Cadastrar "}projeto</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form>
@@ -329,7 +355,17 @@ export default function Projetos() {
                         <Button variant="secondary" onClick={() => setShowTarefasProjeto(null)}>Fechar</Button>
                     </Modal.Footer>
                 </Modal>
+                <Modal show={showConfirmExcluir} onHide={() => setShowConfirmExcluir(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirmação</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Tem certeza que deseja excluir este projeto?</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowConfirmExcluir(false)}>Cancelar</Button>
+                        <Button variant="danger" onClick={() => excluirProjeto(projetoParaExcluir)}>Excluir</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
-        </div>
+        </div >
     );
 }

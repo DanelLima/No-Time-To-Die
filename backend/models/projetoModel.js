@@ -52,3 +52,20 @@ export async function criarProjeto(projeto) {
 
     return idProjeto;
 }
+
+export async function atualizarProjeto(id, projeto) {
+    await db.query(`
+        UPDATE projeto SET nome = ?, descricao = ?, dataInicio = ?, dataFim = ?, status = ?, valorArrecadado = ?
+        WHERE idProjeto = ?
+    `, [projeto.nome, projeto.descricao, projeto.dataInicio, projeto.dataFim, projeto.status, projeto.valorArrecadado, id]);
+
+    if (projeto.cliente) {
+        await db.query(`
+            UPDATE cliente SET nome = ?, email = ?, telefone = ? WHERE idProjeto = ?
+        `, [projeto.cliente.nome, projeto.cliente.email, projeto.cliente.telefone, id]);
+    }
+}
+export async function deletarProjeto(id) {
+    await db.query(`DELETE FROM cliente WHERE idProjeto = ?`, [id]);
+    await db.query(`DELETE FROM projeto WHERE idProjeto = ?`, [id]);
+}

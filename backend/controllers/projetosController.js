@@ -1,4 +1,4 @@
-import { buscarProjetosPorUsuario, criarProjeto } from '../models/projetoModel.js';
+import { buscarProjetosPorUsuario, criarProjeto, atualizarProjeto, deletarProjeto } from '../models/projetoModel.js';
 
 export const buscarProjetos = async (req, res) => {
     try {
@@ -19,3 +19,28 @@ export const cadastrarProjeto = async (req, res) => {
         res.status(500).json({ error: "Erro interno ao cadastrar projeto." });
     }
 };
+
+export const editarProjeto = async (req, res) => {
+    const { idProjeto } = req.params;
+    const {
+        nome, descricao, dataInicio, dataFim, status, valorArrecadado, cliente
+    } = req.body;
+    try {
+        await atualizarProjeto(idProjeto, {
+            nome, descricao, dataInicio, dataFim, status, valorArrecadado, cliente
+        });
+        res.status(200).json({ message: "Projeto atualizado com sucesso" });
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao atualizar projeto" });
+    }
+}
+
+export const excluirProjeto = async (req, res) => {
+    const { idProjeto } = req.params;
+    try {
+        await deletarProjeto(idProjeto);
+        res.status(200).json({ message: "Projeto excluido com sucesso" });
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao excluir projeto" });
+    }
+}
