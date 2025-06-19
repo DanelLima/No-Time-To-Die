@@ -51,11 +51,11 @@ cd no-time-to-die
 ### 2. Instale as dependências
 
 ```bash
-# Frontend
+# React
 npx create-react-app no-time-to-die
 npm install axios react-router-dom bootstrap react-bootstrap
 
-# Calendário
+# Calendário -> React
 npm install @fullcalendar/core @fullcalendar/react @fullcalendar/daygrid
 
 # Backend

@@ -67,26 +67,26 @@ export default function Menu() {
           </button>
 
           <div className="sidebar-options">
-            <a href="/no-time-to-die/menu">
+            <a href="/menu">
               <i className="bi bi-house"></i>
               <span>Página Principal</span>
             </a>
-            <a href="/no-time-to-die/projetos">
+            <a href="/projetos">
               <i className="bi bi-file-text"></i>
               <span>Projetos</span>
             </a>
-            <a href="/no-time-to-die/relatorios">
+            <a href="/relatorios">
               <i className="bi bi-kanban"></i>
               <span>Baixar Relatórios</span>
             </a>
-            <a href="/no-time-to-die/ponto">
+            <a href="/ponto">
               <i class="bi bi-clock-history"></i>
               <span>Pontos</span>
             </a>
           </div>
 
           <div className="sidebar-footer">
-            <a href="/no-time-to-die/" onClick={() => {
+            <a href="/" onClick={() => {
               localStorage.clear();
             }}>
               <i className="bi bi-box-arrow-left"></i>
