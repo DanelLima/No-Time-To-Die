@@ -34,6 +34,8 @@ Sistema web para controle de pontos, metas e atividades. Possui frontend em Reac
   - Express  
   - MySQL2  
   - CORS  
+  - Nodemon
+
 - **Estilização**:  
   - Bootstrap  
 
@@ -69,13 +71,13 @@ npm install express mysql2 cors
 ### Iniciar o Frontend
 
 ```bash
-npm start
+npm src/react/start
 ```
 
 ### Iniciar o Backend
 
 ```bash
-node src/backend/server.js
+nodemon src/backend/server.js
 ```
 
 > ⚠️ Certifique-se de que o backend está escutando na porta `3001` ou a definida em `server.js`.

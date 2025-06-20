@@ -5,6 +5,7 @@ import user from './routes/userRoutes.js';
 import ponto from './routes/pontoRoutes.js'
 import projeto from './routes/projetoRoutes.js';
 import { initDb } from './config/database.js';
+import relatorio from './routes/relatorioRoutes.js';
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use('/usuario', user);
 app.use('/ponto', ponto);
 app.use('/projeto', projeto);
+app.use('/relatorios', relatorio)
 
 const startServer = async () => {
   try {
