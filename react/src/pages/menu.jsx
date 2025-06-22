@@ -153,15 +153,15 @@ export default function Menu() {
 
           <div className="col-md-6">
             <div className="p-3 border bg-white shadow">
-              <h4>Projetos</h4>
+              <h4>Último projeto adicionado</h4>
               <ul></ul>
             </div>
           </div>
 
           <div className="col-md-6">
             <div className="p-3 border bg-white shadow">
-              <h4>Calendário de Atividades</h4>
-              <p>Calendário com atividades realizadas.</p>
+              <h4>Calendário de Tarefas</h4>
+              <p>Calendário com tarefas realizadas.</p>
               <FullCalendar
                 plugins={[dayGridPlugin]}
                 initialView="dayGridMonth"

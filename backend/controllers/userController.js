@@ -1,5 +1,4 @@
-import { findByEmail } from '../models/userModel.js';
-import { inserirUsuario } from '../models/userModel.js';
+import { findByEmail, inserirUsuario } from '../models/userModel.js';
 
 export const login = async (req, res) => {
   const { email, senha } = req.body;

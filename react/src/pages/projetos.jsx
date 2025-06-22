@@ -8,6 +8,10 @@ export default function Projetos() {
     const [projetos, setProjetos] = useState([]);
     const [showCadastrar, setShowCadastrar] = useState(false);
     const [showTarefasProjeto, setShowTarefasProjeto] = useState(null);
+    const [tarefas, setTarefas] = useState([]);
+    const [novaTarefa, setNovaTarefa] = useState({ nome: "", descricao: "", status: "" });
+    const [modoEdicaoTarefa, setModoEdicaoTarefa] = useState(false);
+    const [idTarefaEditando, setIdTarefaEditando] = useState(null);
     const [modoEdicao, setModoEdicao] = useState(false);
     const [idProjetoEditando, setIdProjetoEditando] = useState(null);
     const [showConfirmExcluir, setShowConfirmExcluir] = useState(false);
@@ -40,6 +44,47 @@ export default function Projetos() {
             buscarProjetos(userData.idUsuario);
         }
     }, []);
+
+    async function buscarTarefas(idProjeto) {
+        try {
+            const res = await fetch(`${API_URL}/tarefas/listar/${idProjeto}`);
+            const data = await res.json();
+            setTarefas(data);
+            setShowTarefasProjeto(idProjeto);
+        } catch (error) {
+            alert("Erro ao buscar tarefas");
+            console.error(error);
+        }
+    }
+
+    async function salvarTarefa() {
+        const url = modoEdicaoTarefa
+            ? `${API_URL}/tarefas/atualizar/${idTarefaEditando}`
+            : `${API_URL}/tarefas/criar`;
+
+        const metodo = modoEdicaoTarefa ? "PUT" : "POST";
+        const payload = { ...novaTarefa, idProjeto: showTarefasProjeto };
+
+        const res = await fetch(url, {
+            method: metodo,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+            buscarTarefas(showTarefasProjeto);
+            setNovaTarefa({ nome: "", descricao: "", status: "" });
+            setModoEdicaoTarefa(false);
+        } else {
+            alert("Erro ao salvar tarefa");
+        }
+    }
+
+    async function excluirTarefa(idTarefa) {
+        const res = await fetch(`${API_URL}/tarefas/excluir/${idTarefa}`, { method: "DELETE" });
+        if (res.ok) buscarTarefas(showTarefasProjeto);
+        else alert("Erro ao excluir tarefa");
+    }
 
     async function buscarProjetos(idUsuario) {
         try {
@@ -79,6 +124,7 @@ export default function Projetos() {
             return () => hamburger.removeEventListener("click", toggleSidebar);
         }
     }, []);
+
 
     async function cadastrarProjeto() {
         const payload = {
@@ -220,7 +266,7 @@ export default function Projetos() {
                                     </div>
                                 )}
                                 <div className="p-3  bg-white ">
-                                    <Button variant="info" className="me-2" onClick={() => setShowTarefasProjeto(projeto.idProjeto)}>Tarefas</Button>
+                                    <Button variant="info" className="me-2" onClick={() => buscarTarefas(projeto.idProjeto)}>Tarefas</Button>
                                     <Button
                                         className="me-2"
                                         variant="warning"
@@ -343,15 +389,75 @@ export default function Projetos() {
                     </Modal.Footer>
                 </Modal>
 
-                <Modal show={!!showTarefasProjeto} onHide={() => setShowTarefasProjeto(null)}>
+                <Modal show={!!showTarefasProjeto} onHide={() => setShowTarefasProjeto(null)} size="lg">
                     <Modal.Header closeButton>
                         <Modal.Title>Tarefas do Projeto</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {/* Listar tarefas do projeto, cada uma com editar, excluir, e botão de adicionar tarefa */}
+                        {tarefas.length > 0 ? (
+                            tarefas.map((tarefa) => (
+                                <div key={tarefa.idTarefa} className="mb-2 border p-2 rounded shadow-sm">
+                                    <h5>{tarefa.nome}</h5>
+                                    <p>{tarefa.descricao}</p>
+                                    <p>Status: {tarefa.status}</p>
+                                    <Button variant="warning" size="sm" className="me-2"
+                                        onClick={() => {
+                                            setNovaTarefa({
+                                                nome: tarefa.nome,
+                                                descricao: tarefa.descricao,
+                                                status: tarefa.status
+                                            });
+                                            setModoEdicaoTarefa(true);
+                                            setIdTarefaEditando(tarefa.idTarefa);
+                                        }}>
+                                        Editar
+                                    </Button>
+                                    <Button variant="danger" size="sm" onClick={() => excluirTarefa(tarefa.idTarefa)}>
+                                        Excluir
+                                    </Button>
+                                </div>
+                            ))
+                        ) : (
+                            <p>Nenhuma tarefa cadastrada</p>
+                        )}
+                        <hr />
+                        <h5>{modoEdicaoTarefa ? "Editar Tarefa" : "Nova Tarefa"}</h5>
+                        <Form>
+                            <Form.Group className="mb-2">
+                                <Form.Label>Título</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={novaTarefa.nome}
+                                    onChange={(e) => setNovaTarefa({ ...novaTarefa, nome: e.target.value })}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-2">
+                                <Form.Label>Descrição</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    value={novaTarefa.descricao}
+                                    onChange={(e) => setNovaTarefa({ ...novaTarefa, descricao: e.target.value })}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-2">
+                                <Form.Label>Status</Form.Label>
+                                <Form.Select
+                                    value={novaTarefa.status || ""}
+                                    onChange={(e) => setNovaTarefa({ ...novaTarefa, status: e.target.value })}
+                                >
+                                    <option value="">Selecione o status</option>
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Em andamento">Em andamento</option>
+                                    <option value="Concluída">Concluída</option>
+                                    <option value="Cancelada">Cancelada</option>
+                                </Form.Select>
+                            </Form.Group>
+                            <Button variant="success" onClick={salvarTarefa}>
+                                {modoEdicaoTarefa ? "Salvar Alterações" : "Adicionar Tarefa"}
+                            </Button>
+                        </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary">Adicionar Tarefa</Button>
                         <Button variant="secondary" onClick={() => setShowTarefasProjeto(null)}>Fechar</Button>
                     </Modal.Footer>
                 </Modal>

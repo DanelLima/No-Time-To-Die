@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
 
@@ -16,6 +16,16 @@ export default function Relatorios() {
 
     useEffect(() => {
         setIdUsuario(3);
+    }, []);
+
+    useEffect(() => {
+        const hamburger = document.querySelector("#toggle-btn");
+        const sidebar = document.querySelector("#sidebar");
+        if (hamburger && sidebar) {
+            const toggleSidebar = () => sidebar.classList.toggle("expand");
+            hamburger.addEventListener("click", toggleSidebar);
+            return () => hamburger.removeEventListener("click", toggleSidebar);
+        }
     }, []);
 
     function formatarDadosParaGrafico(dadosApi) {
@@ -158,7 +168,7 @@ export default function Relatorios() {
 
             {/* MAIN */}
             <div className="main p-3">
-                <h1 className="text-center mb-4">Relatórios</h1>
+                <h1 className="text-center mb-4">RELATÓRIOS</h1>
 
                 <Form>
                     <Form.Group className="mb-3">
