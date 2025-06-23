@@ -1,4 +1,4 @@
-import { buscarProjetosPorUsuario, criarProjeto, atualizarProjeto, deletarProjeto } from '../models/projetoModel.js';
+import { buscarProjetosPorUsuario, criarProjeto, atualizarProjeto, deletarProjeto, buscarUltimoProjetoUsuario } from '../models/projetoModel.js';
 
 export const buscarProjetos = async (req, res) => {
     try {
@@ -44,3 +44,14 @@ export const excluirProjeto = async (req, res) => {
         res.status(500).json({ error: "Erro ao excluir projeto" });
     }
 }
+
+export const buscarUltimoProjeto = async (req, res) => {
+    try {
+        const { idUsuario } = req.params;
+        const projeto = await buscarUltimoProjetoUsuario(idUsuario);
+        res.json(projeto);
+    } catch (error) {
+        console.error("Erro ao buscar projeto:", error);
+        res.status(500).json({ error: "Erro interno no servidor." });
+    }
+};

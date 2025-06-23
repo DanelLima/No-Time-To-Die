@@ -1,4 +1,4 @@
-import { listarPorProjeto, criar, atualizar, excluir } from '../models/tarefaModel.js';
+import { listarPorProjeto, criar, atualizar, excluir, listarTarefasPendentes, listarTarefasConcluidas } from '../models/tarefaModel.js';
 
 export const listarPorProjetoTarefa = async (req, res) => {
     try {
@@ -42,5 +42,27 @@ export const  excluirTarefa = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ erro: "Erro ao excluir tarefa" });
+    }
+};
+
+export const tarefasConcluidas = async (req, res) => {
+  try {
+        const { idUsuario } = req.params;
+        const tarefas = await listarTarefasConcluidas(idUsuario);
+        res.json(tarefas);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: "Erro ao buscar tarefas" });
+    }
+}
+
+export const tarefasPendentes = async (req, res) => {
+    try {
+        const { idUsuario } = req.params;
+        const tarefas = await listarTarefasPendentes(idUsuario);
+        res.json(tarefas);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ erro: "Erro ao buscar tarefas" });
     }
 };

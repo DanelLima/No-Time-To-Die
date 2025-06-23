@@ -69,3 +69,8 @@ export async function deletarProjeto(id) {
     await db.query(`DELETE FROM cliente WHERE idProjeto = ?`, [id]);
     await db.query(`DELETE FROM projeto WHERE idProjeto = ?`, [id]);
 }
+
+export async function buscarUltimoProjetoUsuario(idUsuario) {
+  const [rows] = await db.query("SELECT * FROM projeto WHERE idUsuario = ? ORDER BY idProjeto DESC LIMIT 1",[idUsuario]);
+  return rows[0];
+}

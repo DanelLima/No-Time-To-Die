@@ -1,8 +1,8 @@
 import { db } from "../config/database.js";
 
-export async function listarPorProjeto(idProjeto){
-    const [rows] = await db.query("SELECT * FROM tarefa WHERE idProjeto = ?", [idProjeto]);
-    return rows;
+export async function listarPorProjeto(idProjeto) {
+  const [rows] = await db.query("SELECT * FROM tarefa WHERE idProjeto = ?", [idProjeto]);
+  return rows;
 }
 
 function formatDateToSQL(date) {
@@ -54,7 +54,17 @@ export async function atualizar(idTarefa, tarefa) {
 }
 
 export async function excluir(idTarefa) {
-    await db.query("DELETE FROM tarefa WHERE idTarefa = ?", [idTarefa]);
+  await db.query("DELETE FROM tarefa WHERE idTarefa = ?", [idTarefa]);
 }
 
+export async function listarTarefasConcluidas(idUsuario) {
+  const [rows] = await db.query(
+   "SELECT T.nome AS nomeTarefa, T.dataConclusao FROM Tarefa T INNER JOIN Projeto P ON T.idProjeto = P.idProjeto WHERE P.idUsuario = ? AND T.status = 'Concluída';", [idUsuario]);
+  return rows;
+}
 
+export async function listarTarefasPendentes(idUsuario) {
+  const [rows] = await db.query(
+    "SELECT T.nome AS nomeTarefa, P.nome AS nomeProjeto FROM Tarefa T INNER JOIN Projeto P ON T.idProjeto = P.idProjeto WHERE P.idUsuario = ? AND T.status = 'Pendente';", [idUsuario]);
+  return rows;
+}

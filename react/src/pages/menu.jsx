@@ -12,18 +12,47 @@ export default function Menu() {
   const [pontos, setPontos] = useState([]);
   const [showMeta, setShowMeta] = useState(false);
   const [showLembrete, setShowLembrete] = useState(false);
-  const API_URL = 'http://localhost:3001/ponto';
+  const [ultimoProjeto, setUltimoProjeto] = useState(null);
+  const [tarefasRealizadas, setTarefasRealizadas] = useState([]);
+  const [tarefasPendentes, setTarefasPendentes] = useState([]);
+  const API_URL = 'http://localhost:3001';
+
+  useEffect(() => {
+    async function fetchMenu() {
+      try {
+        const projetoRes = await fetch(`${API_URL}/projeto/ultimo/${userData?.idUsuario}`);
+        const realizadasRes = await fetch(`${API_URL}/tarefas/concluidas/${userData?.idUsuario}`);
+        const pendentesRes = await fetch(`${API_URL}/tarefas/pendentes/${userData?.idUsuario}`);
+
+        if (!projetoRes.ok || !realizadasRes.ok || !pendentesRes.ok) {
+          throw new Error("Erro ao buscar dados do menu");
+        }
+
+        const projeto = await projetoRes.json();
+        const realizadas = await realizadasRes.json();
+        const pendentes = await pendentesRes.json();
+
+        setUltimoProjeto(projeto);
+        setTarefasRealizadas(realizadas);
+        setTarefasPendentes(pendentes);
+      } catch (error) {
+        console.error("Erro no fetchMenu:", error);
+      }
+    }
+    fetchMenu();
+  }, [userData]);
+
 
   async function buscarPontosHoje(idUsuario) {
-  const res = await fetch(`${API_URL}/hoje/${idUsuario}`);
-  return res.json();
+    const res = await fetch(`${API_URL}/ponto/hoje/${idUsuario}`);
+    return res.json();
   }
-  
+
   async function baterPonto(idUsuario) {
-  const res = await fetch(`${API_URL}/bater/${idUsuario}`, {
-    method: 'POST'
+    const res = await fetch(`${API_URL}/ponto/bater/${idUsuario}`, {
+      method: 'POST'
     });
-  return res.json();
+    return res.json();
   }
 
   useEffect(() => {
@@ -153,8 +182,18 @@ export default function Menu() {
 
           <div className="col-md-6">
             <div className="p-3 border bg-white shadow">
-              <h4>Último projeto adicionado</h4>
-              <ul></ul>
+              <h4>Tarefas Pendentes</h4>
+              <ul>
+                {tarefasPendentes.length > 0 ? (
+                  tarefasPendentes.map((tarefa, idx) => (
+                    <li key={idx}>
+                      {tarefa.nomeTarefa} — <strong>{tarefa.nomeProjeto}</strong>
+                    </li>
+                  ))
+                ) : (
+                  <li>Sem tarefas pendentes</li>
+                )}
+              </ul>
             </div>
           </div>
 
@@ -165,13 +204,30 @@ export default function Menu() {
               <FullCalendar
                 plugins={[dayGridPlugin]}
                 initialView="dayGridMonth"
-                events={[
-                  { title: "Entrega de Projeto", date: "2025-05-25" },
-                  { title: "Reunião", date: "2025-05-27" },
-                ]}
+                events={tarefasRealizadas.map(t => ({
+                  title: t.nomeTarefa,
+                  date: t.dataConclusao
+                }))}
               />
             </div>
           </div>
+
+          <div className="col-md-6">
+            <div className="p-3 border bg-white shadow">
+              <h4>Último projeto adicionado</h4><br />
+              {ultimoProjeto ? (<>
+                <h5>{ultimoProjeto.nome}</h5>
+                <p>{ultimoProjeto.descricao}</p>
+                <p>Status: {ultimoProjeto.status}</p>
+                <p>Data Início: {new Date(ultimoProjeto.dataInicio).toLocaleDateString('pt-BR')}</p>
+                <p>Data Fim: {new Date(ultimoProjeto.dataFim).toLocaleDateString('pt-BR')}</p>
+              </>
+              ) : (
+                <h5>Nenhum projeto encontrado</h5>
+              )}
+            </div>
+          </div>
+
         </div>
 
         {/* MODAL: META */}
