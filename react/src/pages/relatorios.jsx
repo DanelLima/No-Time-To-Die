@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
+import html2pdf from "html2pdf.js";
+import { useRef } from "react";
 
 export default function Relatorios() {
     const [tipoRelatorio, setTipoRelatorio] = useState("");
@@ -12,6 +14,7 @@ export default function Relatorios() {
     const [horasTotais, setHorasTotais] = useState(0);
     const [loading, setLoading] = useState(false);
     const [erro, setErro] = useState("");
+    const relatorioRef = useRef();
     const API_URL = 'http://localhost:3001'
 
     useEffect(() => {
@@ -53,6 +56,19 @@ export default function Relatorios() {
             ],
         };
     }
+    const exportarPDF = () => {
+        const opt = {
+            margin: 0.5,
+            filename: `relatorio-${tipoRelatorio}-${Date.now()}.pdf`,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 3, useCORS: true }, 
+            jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+        };
+
+        setTimeout(() => {
+            html2pdf().set(opt).from(relatorioRef.current).save();
+        }, 300);
+    };
 
     const gerarFolhaDePonto = async () => {
         if (!periodo.inicio || !periodo.fim) {
@@ -225,38 +241,68 @@ export default function Relatorios() {
                         {loading ? "Gerando..." : "Gerar Relatório"}
                     </Button>
                 </Form>
-
-                {tipoRelatorio === "ponto-periodo" && registrosPonto.length > 0 && (
-                    <div className="mt-5">
-                        <h3>Registros da Folha de Ponto</h3>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>Data / Hora</th>
-                                    <th>Tipo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {registrosPonto.map((r) => (
-                                    <tr key={r.idPonto}>
-                                        <td>{new Date(r.dataHora).toLocaleString()}</td>
-                                        <td>{r.entrada ? "Entrada" : r.saida ? "Saída" : "—"}</td>
+                <div className="mt-5 " id="relatorioRef" ref={relatorioRef}>
+                    {tipoRelatorio === "ponto-periodo" && registrosPonto.length > 0 && (
+                        <div className="mt-5">
+                            <h3>Registros da Folha de Ponto</h3>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Data / Hora</th>
+                                        <th>Tipo</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <p>
-                            <strong>Total de horas trabalhadas no período: </strong>
-                            {horasTotais.toFixed(2)} h
-                        </p>
-                    </div>
-                )}
-                {dadosGrafico && (
-                    <div className="mt-5">
-                        <h4 className="mb-3">Gráfico de Produtividade</h4>
-                        <Line data={dadosGrafico} />
-                    </div>
-                )}
+                                </thead>
+                                <tbody>
+                                    {registrosPonto.map((r) => (
+                                        <tr key={r.idPonto}>
+                                            <td>{new Date(r.dataHora).toLocaleString()}</td>
+                                            <td>{r.entrada ? "Entrada" : r.saida ? "Saída" : "—"}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <p>
+                                <strong>Total de horas trabalhadas no período: </strong>
+                                {horasTotais.toFixed(2)} h
+                            </p>
+                        </div>
+                    )}
+                    {dadosGrafico && (
+                        <div className="mt-5">
+                            <h4 className="mb-3">Gráfico de Produtividade</h4>
+                            <div
+                                style={{
+                                    width: "100%",
+                                    height: "500px", // altura fixa
+                                    overflow: "hidden", // impede que quebre o layout
+                                }}
+                            >
+                                <Line
+                                    data={dadosGrafico}
+                                    options={{
+                                        maintainAspectRatio: false,
+                                        responsive: true,
+                                        plugins: {
+                                            legend: { position: "top" },
+                                        },
+                                        layout: {
+                                            padding: 10,
+                                        },
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+
+
+                    )}
+                </div>
+                {(tipoRelatorio === "ponto-periodo" && registrosPonto.length > 0) ||
+                    (dadosGrafico && tipoRelatorio.startsWith("produtividade")) ? (
+                    <Button className="mt-3" onClick={() => exportarPDF()}>
+                        Baixar PDF
+                    </Button>
+                ) : null}
             </div>
         </div>
     );

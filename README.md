@@ -55,13 +55,13 @@ cd no-time-to-die
 ```bash
 # React
 npx create-react-app no-time-to-die
-npm install axios react-router-dom bootstrap react-bootstrap
+npm install axios react-router-dom bootstrap react-bootstrap html2pdf.js react-chartjs-2 chart.js
 
 # Calendário -> React
 npm install @fullcalendar/core @fullcalendar/react @fullcalendar/daygrid
 
 # Backend
-npm install express mysql2 cors
+npm install express mysql2 cors 
 ```
 
 ---
