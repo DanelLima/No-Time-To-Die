@@ -164,24 +164,6 @@ export default function Menu() {
 
           <div className="col-md-6">
             <div className="p-3 border bg-white shadow">
-              <h4>Metas</h4>
-              <Button variant="success" onClick={() => setShowMeta(true)}>
-                Definir Meta
-              </Button>
-            </div>
-          </div>
-
-          <div className="col-md-6">
-            <div className="p-3 border bg-white shadow">
-              <h4>Lembretes de Pausa</h4>
-              <Button variant="warning" onClick={() => setShowLembrete(true)}>
-                Criar Lembrete
-              </Button>
-            </div>
-          </div>
-
-          <div className="col-md-6">
-            <div className="p-3 border bg-white shadow">
               <h4>Tarefas Pendentes</h4>
               <ul>
                 {tarefasPendentes.length > 0 ? (
@@ -194,6 +176,22 @@ export default function Menu() {
                   <li>Sem tarefas pendentes</li>
                 )}
               </ul>
+            </div>
+          </div>
+
+          <div className="col-md-6">
+            <div className="p-3 border bg-white shadow">
+              <h4>Último projeto adicionado</h4><br />
+
+              {ultimoProjeto ? (<>
+                <h5>{ultimoProjeto.nome}</h5>
+                <p>Status: {ultimoProjeto.status}</p>
+                <p>Data Início: {new Date(ultimoProjeto.dataInicio).toLocaleDateString('pt-BR')}</p>
+                <p>Data Fim: {new Date(ultimoProjeto.dataFim).toLocaleDateString('pt-BR')}</p>
+              </>
+              ) : (
+                <h5>Nenhum projeto encontrado</h5>
+              )}
             </div>
           </div>
 
@@ -214,17 +212,19 @@ export default function Menu() {
 
           <div className="col-md-6">
             <div className="p-3 border bg-white shadow">
-              <h4>Último projeto adicionado</h4><br />
-              {ultimoProjeto ? (<>
-                <h5>{ultimoProjeto.nome}</h5>
-                <p>{ultimoProjeto.descricao}</p>
-                <p>Status: {ultimoProjeto.status}</p>
-                <p>Data Início: {new Date(ultimoProjeto.dataInicio).toLocaleDateString('pt-BR')}</p>
-                <p>Data Fim: {new Date(ultimoProjeto.dataFim).toLocaleDateString('pt-BR')}</p>
-              </>
-              ) : (
-                <h5>Nenhum projeto encontrado</h5>
-              )}
+              <h4>Metas</h4>
+              <Button variant="success" onClick={() => setShowMeta(true)}>
+                Definir Meta
+              </Button>
+            </div>
+          </div>
+
+          <div className="col-md-6">
+            <div className="p-3 border bg-white shadow">
+              <h4>Lembretes de Pausa</h4>
+              <Button variant="warning" onClick={() => setShowLembrete(true)}>
+                Criar Lembrete
+              </Button>
             </div>
           </div>
 
